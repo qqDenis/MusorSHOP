@@ -26,7 +26,7 @@ const products = [
     {
         id: 4,
         title: "ASUS ROG Zephyrus G16",
-        desc: "Ігровий ноутбук: Intel Core Ultra 9, RTX 4070, OLED-екран 240 Гц.",
+        desc: "Ігровий ноутбук: Intel Core Ultra 9, RTX 5050, OLED-екран 165 Гц.",
         price: 89999,
         category: "laptops",
         image: "./assets/images/asus rog.jpg"
@@ -67,6 +67,72 @@ if (container) {
             `;
         })
         .join("");
-
+        
+    // ВСТАВЛЯЄМО HTML НА СТОРІНКУ ТУТ (до того, як шукатимемо кнопки)
     container.innerHTML = htmlString;
 }
+
+// ==========================================
+// ЛОГІКА КОШИКА (Простий варіант із const)
+// ==========================================
+
+// 1. Створюємо порожній масив.
+const cart = [];
+
+// 2. Функція для додавання товару
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    const itemInCart = cart.find(item => item.id === productId);
+
+    if (itemInCart) {
+        itemInCart.quantity = itemInCart.quantity + 1;
+    } else {
+        cart.push({ 
+            id: product.id, 
+            title: product.title, 
+            price: product.price, 
+            quantity: 1 
+        });
+    }
+
+    updateUI();
+}
+
+// 3. Рахуємо суму
+function calculateTotal() {
+    let totalSum = 0;
+    
+    cart.forEach(item => {
+        totalSum = totalSum + (item.price * item.quantity);
+    });
+    
+    return totalSum;
+}
+
+// 4. Оновлюємо цифру в шапці сайту
+function updateUI() {
+    const cartCounter = document.querySelector(".cart-counter");
+    let totalItems = 0;
+    
+    cart.forEach(item => {
+        totalItems = totalItems + item.quantity;
+    });
+
+    if (cartCounter) {
+        cartCounter.textContent = totalItems;
+    }
+
+    console.log("Кошик:", cart);
+    console.log("Загальна сума:", calculateTotal(), "грн");
+}
+
+// 5. Підключаємо кліки до кнопок
+// Тепер кнопки успішно знайдуться, бо ми вже додали їх у HTML вище!
+const buyButtons = document.querySelectorAll(".btn-buy");
+
+buyButtons.forEach(button => {
+    button.addEventListener("click", function() {
+        const id = Number(button.dataset.id);
+        addToCart(id);
+    });
+});
