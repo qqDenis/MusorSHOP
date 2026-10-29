@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusorSHOP — Інтернет-магазин техніки</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">Musor<span>SHOP</span></div>
+        <nav class="main-nav">
+            <ul class="nav-list">
+                <li><a href="#">Головна</a></li>
+                <li><a href="#">Ноутбуки</a></li>
+                <li><a href="#">Смартфони</a></li>
+                <li><a href="#">Аксесуари</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <button class="btn-cart">🛒 Кошик (0)</button>
+        </div>
+    </header>
+
+    <main class="page-layout">
+        <aside class="sidebar">
+            <h3>Бренди</h3>
+            <ul class="filter-list">
+                <li><label><input type="checkbox"> Apple</label></li>
+                <li><label><input type="checkbox"> Samsung</label></li>
+                <li><label><input type="checkbox"> ASUS</label></li>
+                <li><label><input type="checkbox"> Sony</label></li>
+            </ul>
+            <h3 class="price-filter">Ціна</h3>
+            <input type="range" min="3000" max="100000" class="price-slider">
+        </aside>
+
+        <section class="products-content">
+            <h2>Популярні гаджети</h2>
+            <div class="products-grid"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p> MusorSHOP. Всі права майже захищено &copy; 2026.</p>
+            <ul class="footer-links">
+                <li><a href="#">Гарантія та сервіс</a></li>
+                <li><a href="#">Доставка і оплата</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>
