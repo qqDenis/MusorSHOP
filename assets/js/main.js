@@ -68,18 +68,12 @@ if (container) {
         })
         .join("");
         
-    // ВСТАВЛЯЄМО HTML НА СТОРІНКУ ТУТ (до того, як шукатимемо кнопки)
     container.innerHTML = htmlString;
 }
 
-// ==========================================
-// ЛОГІКА КОШИКА (Простий варіант із const)
-// ==========================================
 
-// 1. Створюємо порожній масив.
 const cart = [];
 
-// 2. Функція для додавання товару
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
     const itemInCart = cart.find(item => item.id === productId);
@@ -98,7 +92,6 @@ function addToCart(productId) {
     updateUI();
 }
 
-// 3. Рахуємо суму
 function calculateTotal() {
     let totalSum = 0;
     
@@ -109,7 +102,6 @@ function calculateTotal() {
     return totalSum;
 }
 
-// 4. Оновлюємо цифру в шапці сайту
 function updateUI() {
     const cartCounter = document.querySelector(".cart-counter");
     let totalItems = 0;
@@ -126,8 +118,6 @@ function updateUI() {
     console.log("Загальна сума:", calculateTotal(), "грн");
 }
 
-// 5. Підключаємо кліки до кнопок
-// Тепер кнопки успішно знайдуться, бо ми вже додали їх у HTML вище!
 const buyButtons = document.querySelectorAll(".btn-buy");
 
 buyButtons.forEach(button => {
