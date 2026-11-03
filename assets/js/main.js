@@ -26,7 +26,7 @@ const products = [
     {
         id: 4,
         title: "ASUS ROG Zephyrus G16",
-        desc: "Ігровий ноутбук: Intel Core Ultra 9, RTX 5050, OLED-екран 165 Гц.",
+        desc: "Ігровий ноутбук: Intel Core Ultra 9, RTX 4070, OLED-екран 240 Гц.",
         price: 89999,
         category: "laptops",
         image: "./assets/images/asus rog.jpg"
@@ -51,9 +51,27 @@ const products = [
 
 const container = document.querySelector(".products-grid");
 
-if (container) {
-    const htmlString = products
-        .map((product) => {
+function fetchProducts() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(products);
+            // reject(new Error("Не вдалося підключитися до бази даних"));
+        }, 1500);
+    });
+}
+
+async function initShop() {
+    const loader = document.getElementById("loader");
+    
+    if (loader) loader.classList.remove("hidden");
+    if (container) container.innerHTML = ""; 
+
+    try {
+        const data = await fetchProducts();
+        
+        if (loader) loader.classList.add("hidden");
+        
+        const htmlString = data.map((product) => {
             return `
                 <article class="product-card">
                     <div class="img-wrapper">
@@ -65,12 +83,19 @@ if (container) {
                     <button class="btn-buy" data-id="${product.id}">Купити</button>
                 </article>
             `;
-        })
-        .join("");
+        }).join("");
+
+        if (container) container.innerHTML = htmlString;
         
-    container.innerHTML = htmlString;
+        attachCartEvents();
+
+    } catch (error) {
+        if (loader) loader.classList.add("hidden");
+        if (container) container.innerHTML = `<p style="color: red; text-align: center;">Помилка: ${error.message}</p>`;
+    }
 }
 
+initShop();
 
 const cart = [];
 
@@ -88,17 +113,14 @@ function addToCart(productId) {
             quantity: 1 
         });
     }
-
     updateUI();
 }
 
 function calculateTotal() {
     let totalSum = 0;
-    
     cart.forEach(item => {
         totalSum = totalSum + (item.price * item.quantity);
     });
-    
     return totalSum;
 }
 
@@ -118,11 +140,12 @@ function updateUI() {
     console.log("Загальна сума:", calculateTotal(), "грн");
 }
 
-const buyButtons = document.querySelectorAll(".btn-buy");
-
-buyButtons.forEach(button => {
-    button.addEventListener("click", function() {
-        const id = Number(button.dataset.id);
-        addToCart(id);
+function attachCartEvents() {
+    const buyButtons = document.querySelectorAll(".btn-buy");
+    buyButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            const id = Number(button.dataset.id);
+            addToCart(id);
+        });
     });
-});
+}

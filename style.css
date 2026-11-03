@@ -1,8 +1,8 @@
 :root {
   --bg-color: #f4f4f5;
   --header-bg: #ffffff;
-  --accent-color: #991b1b; /* Технологічний синій акцент */
-  --accent-hover: #1d4ed8;
+  --accent-color: #dc2626;
+  --accent-hover: #b91c1c;
   --text-main: #1f2937;
   --text-muted: #6b7280;
   --card-bg: #ffffff;
@@ -277,3 +277,29 @@ body {
     text-align: center;
   }
 }
+  
+  .loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .hidden {
+    display: none !important;
+  }
