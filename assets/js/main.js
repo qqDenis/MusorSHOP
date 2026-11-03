@@ -138,6 +138,8 @@ function updateUI() {
 
     console.log("Кошик:", cart);
     console.log("Загальна сума:", calculateTotal(), "грн");
+
+    renderCartItems();
 }
 
 function attachCartEvents() {
@@ -149,3 +151,80 @@ function attachCartEvents() {
         });
     });
 }
+
+// ===== Модальне вікно кошика =====
+const cartButton = document.querySelector(".btn-cart");
+const cartOverlay = document.getElementById("cartOverlay");
+const closeBtn = document.getElementById("closeCartBtn");
+const cartItemsContainer = document.getElementById("cartItemsContainer");
+
+function openCartModal() {
+    cartOverlay.classList.remove("hidden");
+    renderCartItems();
+}
+
+function closeCartModal() {
+    cartOverlay.classList.add("hidden");
+}
+
+function renderCartItems() {
+    const totalSum = document.getElementById("cartTotalSum");
+
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Кошик порожній.</p>";
+    } else {
+        cartItemsContainer.innerHTML = cart.map(item => {
+            const product = products.find(p => p.id === item.id);
+            return `
+                <div class="cart-item">
+                    <img src="${product.image}" alt="${item.title}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.title}</div>
+                        <div class="cart-item-price">${item.price.toLocaleString("uk-UA")} грн × ${item.quantity}</div>
+                    </div>
+                    <div class="qty-controls">
+                        <button data-action="minus" data-id="${item.id}">−</button>
+                        <span>${item.quantity}</span>
+                        <button data-action="plus" data-id="${item.id}">+</button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    totalSum.textContent = calculateTotal().toLocaleString("uk-UA");
+}
+
+function decreaseFromCart(productId) {
+    const index = cart.findIndex(item => item.id === productId);
+    if (index === -1) return;
+
+    cart[index].quantity = cart[index].quantity - 1;
+    if (cart[index].quantity === 0) {
+        cart.splice(index, 1);
+    }
+    updateUI();
+}
+
+// Слухачі
+cartButton.addEventListener("click", openCartModal);
+closeBtn.addEventListener("click", closeCartModal);
+
+cartOverlay.addEventListener("click", (event) => {
+    if (event.target === cartOverlay) {
+        closeCartModal();
+    }
+});
+
+// Плюс/мінус у кошику (делегування подій, бо кнопки створюються динамічно)
+cartItemsContainer.addEventListener("click", (event) => {
+    const btn = event.target.closest("button[data-action]");
+    if (!btn) return;
+
+    const id = Number(btn.dataset.id);
+    if (btn.dataset.action === "plus") {
+        addToCart(id);
+    } else if (btn.dataset.action === "minus") {
+        decreaseFromCart(id);
+    }
+});

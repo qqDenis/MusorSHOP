@@ -55,7 +55,21 @@
             </ul>
         </div>
     </footer>
-
+    <div class="modal-overlay hidden" id="cartOverlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h2>Ваш кошик</h2>
+                <button class="close-btn" id="closeCartBtn">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItemsContainer">
+                <p>Кошик порожній</p>
+            </div>
+            <div class="modal-footer">
+                <h3>Разом: <span id="cartTotalSum">0</span> грн</h3>
+                <a href="checkout.html" class="btn btn-primary" id="checkoutBtn">Оформити замовлення</a>
+            </div>
+        </div>
+    </div>
     <script type="module" src="./assets/js/main.js"></script>
 </body>
 </html>
