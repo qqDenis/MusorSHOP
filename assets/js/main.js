@@ -1,4 +1,4 @@
-const products = [
+/*const products = [
     {
         id: 1,
         title: "Apple MacBook Pro 16\"",
@@ -48,29 +48,42 @@ const products = [
         image: "./assets/images/sony.jpg"
     }
 ];
+*/
+
+let globalStoreProducts = [];
 
 const container = document.querySelector(".products-grid");
 
-function fetchProducts() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(products);
-            // reject(new Error("Не вдалося підключитися до бази даних"));
-        }, 1500);
-    });
+async function fetchProducts() {
+    try {
+        const response = await fetch("https://fakestoreapi.com/products?limit=8");
+
+        if (!response.ok) {
+            throw new Error(`HTTP помилка: ${response.status}`);
+        }
+
+        const realProducts = await response.json();
+        // console.log("Дані з сервера:", realProducts);
+
+        return realProducts;
+    } catch (error) {
+        console.error("Помилка завантаження товарів:", error.message);
+        throw error;
+    }
 }
 
 async function initShop() {
     const loader = document.getElementById("loader");
-    
+
     if (loader) loader.classList.remove("hidden");
-    if (container) container.innerHTML = ""; 
+    if (container) container.innerHTML = "";
 
     try {
         const data = await fetchProducts();
-        
+        globalStoreProducts = data;
+
         if (loader) loader.classList.add("hidden");
-        
+
         const htmlString = data.map((product) => {
             return `
                 <article class="product-card">
@@ -78,15 +91,15 @@ async function initShop() {
                         <img src="${product.image}" alt="${product.title}" class="product-img">
                     </div>
                     <h3 class="product-title">${product.title}</h3>
-                    <p class="product-desc">${product.desc}</p>
-                    <span class="product-price">${product.price.toLocaleString("uk-UA")} грн</span>
+                    <p class="product-desc">${product.description}</p>
+                    <span class="product-price">$${product.price}</span>
                     <button class="btn-buy" data-id="${product.id}">Купити</button>
                 </article>
             `;
         }).join("");
 
         if (container) container.innerHTML = htmlString;
-        
+
         attachCartEvents();
 
     } catch (error) {
@@ -100,17 +113,17 @@ initShop();
 const cart = [];
 
 function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
+    const product = globalStoreProducts.find(p => p.id === productId);
     const itemInCart = cart.find(item => item.id === productId);
 
     if (itemInCart) {
         itemInCart.quantity = itemInCart.quantity + 1;
     } else {
-        cart.push({ 
-            id: product.id, 
-            title: product.title, 
-            price: product.price, 
-            quantity: 1 
+        cart.push({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            quantity: 1
         });
     }
     updateUI();
@@ -127,7 +140,7 @@ function calculateTotal() {
 function updateUI() {
     const cartCounter = document.querySelector(".cart-counter");
     let totalItems = 0;
-    
+
     cart.forEach(item => {
         totalItems = totalItems + item.quantity;
     });
@@ -137,7 +150,7 @@ function updateUI() {
     }
 
     console.log("Кошик:", cart);
-    console.log("Загальна сума:", calculateTotal(), "грн");
+    console.log("Загальна сума:", calculateTotal().toFixed(2), "$");
 
     renderCartItems();
 }
@@ -152,7 +165,6 @@ function attachCartEvents() {
     });
 }
 
-// ===== Модальне вікно кошика =====
 const cartButton = document.querySelector(".btn-cart");
 const cartOverlay = document.getElementById("cartOverlay");
 const closeBtn = document.getElementById("closeCartBtn");
@@ -174,13 +186,13 @@ function renderCartItems() {
         cartItemsContainer.innerHTML = "<p>Кошик порожній.</p>";
     } else {
         cartItemsContainer.innerHTML = cart.map(item => {
-            const product = products.find(p => p.id === item.id);
+            const product = globalStoreProducts.find(p => p.id === item.id);
             return `
                 <div class="cart-item">
                     <img src="${product.image}" alt="${item.title}">
                     <div class="cart-item-info">
                         <div class="cart-item-title">${item.title}</div>
-                        <div class="cart-item-price">${item.price.toLocaleString("uk-UA")} грн × ${item.quantity}</div>
+                        <div class="cart-item-price">$${item.price} × ${item.quantity}</div>
                     </div>
                     <div class="qty-controls">
                         <button data-action="minus" data-id="${item.id}">−</button>
@@ -192,7 +204,7 @@ function renderCartItems() {
         }).join("");
     }
 
-    totalSum.textContent = calculateTotal().toLocaleString("uk-UA");
+    totalSum.textContent = calculateTotal().toFixed(2);
 }
 
 function decreaseFromCart(productId) {
@@ -206,7 +218,6 @@ function decreaseFromCart(productId) {
     updateUI();
 }
 
-// Слухачі
 cartButton.addEventListener("click", openCartModal);
 closeBtn.addEventListener("click", closeCartModal);
 
@@ -216,7 +227,6 @@ cartOverlay.addEventListener("click", (event) => {
     }
 });
 
-// Плюс/мінус у кошику (делегування подій, бо кнопки створюються динамічно)
 cartItemsContainer.addEventListener("click", (event) => {
     const btn = event.target.closest("button[data-action]");
     if (!btn) return;

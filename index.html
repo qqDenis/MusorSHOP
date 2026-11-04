@@ -9,12 +9,12 @@
 <body>
 
     <header class="header">
-        <div class="logo">MusorSHOP</div>
+        <div class="logo">Musor<span>SHOP</span></div>
         <nav class="main-nav">
             <ul class="nav-list">
                 <li><a href="#">Головна</a></li>
-                <li><a href="#">Ноутбуки</a></li>
-                <li><a href="#">Смартфони</a></li>
+                <li><a href="#">Одяг</a></li>
+                <li><a href="#">Прикраси</a></li>
                 <li><a href="#">Аксесуари</a></li>
             </ul>
         </nav>
@@ -25,19 +25,18 @@
 
     <main class="page-layout">
         <aside class="sidebar">
-            <h3>Бренди</h3>
+            <h3>Категорії</h3>
             <ul class="filter-list">
-                <li><label><input type="checkbox"> Apple</label></li>
-                <li><label><input type="checkbox"> Samsung</label></li>
-                <li><label><input type="checkbox"> ASUS</label></li>
-                <li><label><input type="checkbox"> Sony</label></li>
+                <li><label><input type="checkbox"> Чоловічий одяг</label></li>
+                <li><label><input type="checkbox"> Прикраси</label></li>
+                <li><label><input type="checkbox"> Аксесуари</label></li>
             </ul>
             <h3 class="price-filter">Ціна</h3>
-            <input type="range" min="3000" max="100000" class="price-slider">
+            <input type="range" min="1" max="700" class="price-slider">
         </aside>
 
         <section class="products-content">
-            <h2>Популярні гаджети</h2>
+            <h2>Популярні товари</h2>
             <div class="loader-container" id="loader">
                 <div class="spinner"></div>
                 <p>Завантаження...</p>
@@ -65,7 +64,7 @@
                 <p>Кошик порожній</p>
             </div>
             <div class="modal-footer">
-                <h3>Разом: <span id="cartTotalSum">0</span> грн</h3>
+                <h3>Разом: $<span id="cartTotalSum">0</span></h3>
                 <a href="checkout.html" class="btn btn-primary" id="checkoutBtn">Оформити замовлення</a>
             </div>
         </div>
