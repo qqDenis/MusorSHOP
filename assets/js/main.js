@@ -1,55 +1,3 @@
-/*const products = [
-    {
-        id: 1,
-        title: "Apple MacBook Pro 16\"",
-        desc: "Процесор M3 Max, 36 ГБ ОЗП, 1 ТБ SSD. Потужність для складних завдань.",
-        price: 129999,
-        category: "laptops",
-        image: "./assets/images/mak.jpg"
-    },
-    {
-        id: 2,
-        title: "Samsung Galaxy S24 Ultra",
-        desc: "Дисплей 6.8\", камера 200 Мп, підтримка S-Pen та штучного інтелекту Galaxy AI.",
-        price: 52999,
-        category: "smartphones",
-        image: "./assets/images/s24.jpg"
-    },
-    {
-        id: 3,
-        title: "Sony PlayStation 5 Slim",
-        desc: "Ігрова консоль з накопичувачем 1 ТБ та бездротовим геймпадом DualSense.",
-        price: 21999,
-        category: "consoles",
-        image: "./assets/images/ps5.jpg"
-    },
-    {
-        id: 4,
-        title: "ASUS ROG Zephyrus G16",
-        desc: "Ігровий ноутбук: Intel Core Ultra 9, RTX 4070, OLED-екран 240 Гц.",
-        price: 89999,
-        category: "laptops",
-        image: "./assets/images/asus rog.jpg"
-    },
-    {
-        id: 5,
-        title: "Apple iPad Air 11\" M2",
-        desc: "Планшет з дисплеєм Liquid Retina та підтримкою Apple Pencil Pro.",
-        price: 28999,
-        category: "tablets",
-        image: "./assets/images/ipad iar.jpg"
-    },
-    {
-        id: 6,
-        title: "Sony WH-1000XM5",
-        desc: "Преміальні навушники з найкращою системою активного шумозаглушення.",
-        price: 14599,
-        category: "audio",
-        image: "./assets/images/sony.jpg"
-    }
-];
-*/
-
 let globalStoreProducts = [];
 
 const container = document.querySelector(".products-grid");
@@ -63,8 +11,6 @@ async function fetchProducts() {
         }
 
         const realProducts = await response.json();
-        // console.log("Дані з сервера:", realProducts);
-
         return realProducts;
     } catch (error) {
         console.error("Помилка завантаження товарів:", error.message);
@@ -86,9 +32,9 @@ async function initShop() {
 
         const htmlString = data.map((product) => {
             return `
-                <article class="product-card">
+                <article class="product-card" draggable="true" data-id="${product.id}">
                     <div class="img-wrapper">
-                        <img src="${product.image}" alt="${product.title}" class="product-img">
+                        <img src="${product.image}" alt="${product.title}" class="product-img" draggable="false">
                     </div>
                     <h3 class="product-title">${product.title}</h3>
                     <p class="product-desc">${product.description}</p>
@@ -100,8 +46,6 @@ async function initShop() {
 
         if (container) container.innerHTML = htmlString;
 
-        attachCartEvents();
-
     } catch (error) {
         if (loader) loader.classList.add("hidden");
         if (container) container.innerHTML = `<p style="color: red; text-align: center;">Помилка: ${error.message}</p>`;
@@ -110,10 +54,14 @@ async function initShop() {
 
 initShop();
 
+/* ---------------- Кошик ---------------- */
+
 const cart = [];
 
 function addToCart(productId) {
     const product = globalStoreProducts.find(p => p.id === productId);
+    if (!product) return;
+
     const itemInCart = cart.find(item => item.id === productId);
 
     if (itemInCart) {
@@ -153,16 +101,6 @@ function updateUI() {
     console.log("Загальна сума:", calculateTotal().toFixed(2), "$");
 
     renderCartItems();
-}
-
-function attachCartEvents() {
-    const buyButtons = document.querySelectorAll(".btn-buy");
-    buyButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            const id = Number(button.dataset.id);
-            addToCart(id);
-        });
-    });
 }
 
 const cartButton = document.querySelector(".btn-cart");
@@ -237,4 +175,56 @@ cartItemsContainer.addEventListener("click", (event) => {
     } else if (btn.dataset.action === "minus") {
         decreaseFromCart(id);
     }
+});
+
+
+const productsContainer = document.querySelector(".products-grid");
+
+productsContainer.addEventListener("click", (event) => {
+    if (event.target.classList.contains("btn-buy")) {
+        const productId = event.target.dataset.id;
+        console.log("Клік по товару з ID:", productId);
+        addToCart(Number(productId));
+    }
+});
+
+productsContainer.addEventListener("dragstart", (event) => {
+    const card = event.target.closest(".product-card");
+    if (card) {
+        event.dataTransfer.setData("text/plain", card.dataset.id);
+        card.classList.add("dragging");
+    }
+});
+
+productsContainer.addEventListener("dragend", (event) => {
+    const card = event.target.closest(".product-card");
+    if (card) {
+        card.classList.remove("dragging");
+    }
+});
+
+const favoritesZone = document.getElementById("favoritesZone");
+
+favoritesZone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    favoritesZone.classList.add("drag-over");
+});
+
+favoritesZone.addEventListener("dragleave", () => {
+    favoritesZone.classList.remove("drag-over");
+});
+
+favoritesZone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    favoritesZone.classList.remove("drag-over");
+
+    const productId = event.dataTransfer.getData("text/plain");
+    if (!productId) return;
+
+    if (favoritesZone.querySelector(`.fav-item[data-id="${productId}"]`)) return;
+
+    favoritesZone.insertAdjacentHTML(
+        "beforeend",
+        `<div class="fav-item" data-id="${productId}">Товар #${productId}</div>`
+    );
 });
