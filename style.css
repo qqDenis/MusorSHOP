@@ -432,3 +432,80 @@ body {
   color: #1f2937;
   font-weight: 600;
 }
+
+
+.search-bar {
+  margin: 20px 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-bar input {
+  padding: 10px;
+  width: 320px;
+  max-width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.search-bar span {
+  color: #666;
+  font-size: 14px;
+}
+
+.no-products {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 0;
+}
+
+.modal-footer {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.order-form {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.form-row {
+  margin-bottom: 12px;
+}
+
+.form-row label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.form-row input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.input-error {
+  color: red;
+  font-size: 13px;
+}
+
+.btn-submit-order {
+  width: 100%;
+  padding: 10px 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-submit-order:hover {
+  background: #218838;
+}
